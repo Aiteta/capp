@@ -360,7 +360,7 @@ state_configurations form_state_configs(state_in_progress_vector const& states) 
 
 parser_graph form_states_to_state_configs(
     state_configurations const& scs, state_in_progress_vector const& states) {
-  auto out = make_graph_with_nnodes(size(states));
+  auto out = make_graph_with_nnodes(isize(states));
   for (int i = 0; i < isize(scs); ++i) {
     auto& sc = at(scs, i);
     at(out, sc.state).push_back(i);
@@ -461,7 +461,7 @@ void print_dot(std::string const& filepath, parser_in_progress const& pip) {
 static parser_graph make_immediate_predecessor_graph(state_configurations const& scs,
     state_in_progress_vector const& states, parser_graph const& states2scs,
     configurations const& cs, grammar_ptr grammar) {
-  auto out = make_graph_with_nnodes(size(scs));
+  auto out = make_graph_with_nnodes(isize(scs));
   for (int s_i = 0; s_i < isize(states); ++s_i) {
     auto& state = *at(states, s_i);
     for (int cis_i = 0; cis_i < isize(state.configs); ++cis_i) {
@@ -490,7 +490,7 @@ static parser_graph make_immediate_predecessor_graph(state_configurations const&
 static parser_graph find_transition_predecessors(state_configurations const& scs,
     state_in_progress_vector const& states, parser_graph const& states2scs,
     configurations const& cs, grammar_ptr grammar) {
-  auto out = make_graph_with_nnodes(size(scs));
+  auto out = make_graph_with_nnodes(isize(scs));
   for (int state_i = 0; state_i < isize(states); ++state_i) {
     auto& state = *at(states, state_i);
     for (auto& action : state.actions) {
@@ -525,7 +525,7 @@ static parser_graph find_transition_predecessors(state_configurations const& scs
 static parser_graph make_originator_graph(state_configurations const& scs,
     state_in_progress_vector const& states, parser_graph const& states2scs,
     configurations const& cs, grammar_ptr grammar) {
-  auto out = make_graph_with_nnodes(size(scs));
+  auto out = make_graph_with_nnodes(isize(scs));
   auto ipg =
       make_immediate_predecessor_graph(scs, states, states2scs, cs, grammar);
   auto tpg = find_transition_predecessors(scs, states, states2scs, cs, grammar);
@@ -777,7 +777,7 @@ static void compute_context_set(int zeta_j_addr, context_types& contexts,
   std::vector<int> stack;
   // need random access, inner insert, which std::stack doesn't provide
   std::vector<int> lane;
-  auto in_lane = make_vector<bool>(size(scs), false);
+  auto in_lane = make_vector<bool>(isize(scs), false);
   lane.push_back(zeta_j_addr);
   at(in_lane, zeta_j_addr) = true;
   bool tests_failed = false;
@@ -957,7 +957,7 @@ static void compute_context_set(int zeta_j_addr, context_types& contexts,
         if (verbose) std::cerr << "  HEURISTIC PROPAGATION OF CONTEXT SETS\n";
         heuristic_propagation_of_context_sets(
             tau_addr, contexts, complete, scs, states, states2scs, cs, grammar);
-        if (size(lane) == 1 && at(lane, 0) == zeta_j_addr) {
+        if (isize(lane) == 1 && at(lane, 0) == zeta_j_addr) {
           if (verbose) std::cerr << "END PROGRAM\n\n";
           return;
         }
@@ -971,7 +971,7 @@ static void compute_context_set(int zeta_j_addr, context_types& contexts,
 
 static std::vector<bool> determine_adequate_states(
     state_in_progress_vector const& states, grammar_ptr grammar, bool verbose) {
-  auto out = make_vector<bool>(size(states));
+  auto out = make_vector<bool>(isize(states));
   for (int s_i = 0; s_i < isize(states); ++s_i) {
     auto& state = *at(states, s_i);
     bool state_is_adequate = true;
@@ -1040,8 +1040,8 @@ parser_in_progress build_lalr1_parser(grammar_ptr grammar, bool verbose) {
     if (verbose) std::cerr << "The grammar is LR(0)!\n";
     return out;
   }
-  auto complete = make_vector<bool>(size(scs), false);
-  auto contexts = make_vector<context_type>(size(scs));
+  auto complete = make_vector<bool>(isize(scs), false);
+  auto contexts = make_vector<context_type>(isize(scs));
   auto accept_prod_i = get_accept_production(*grammar);
   /* initialize the accepting state-configs as described in
      footnote 8 at the bottom of page 37 */
